@@ -13,7 +13,7 @@ new class extends Component {
     public function getMostDownloadedStarterKits()
     {
         // make request to https://packagist.org/search.json?tags=starter%20kit&per_page=100
-        $response = Http::get('https://packagist.org/search.json?tags=starter%20kit&per_page=20');
+        $response = Http::get('https://packagist.org/search.json?q=laravel&tags=starter%20kit&per_page=20');
         return collect($response->json()['results'])->sortByDesc('favers');
 
         // returns {results: [{name: 'laravel-lang/starter-kits', downloads: 107343, favers: 1000}]}
