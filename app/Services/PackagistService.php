@@ -11,7 +11,7 @@ class PackagistService
         $cacheKey = "packagist_{$vendor}_{$package}";
 
         return cache()->remember($cacheKey, 60 * 5, function () use ($vendor, $package) {
-            $response = Http::get("https://packagist.org/packages/{$vendor}/{$package}.json");
+            $response = Http::withUserAgent('laravel.starterkits.app/1.0')->get("https://packagist.org/packages/{$vendor}/{$package}.json");
             return $response->json();
         });
 
