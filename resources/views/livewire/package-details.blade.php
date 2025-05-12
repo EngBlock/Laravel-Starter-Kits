@@ -47,26 +47,47 @@ new class extends Component {
 
     <div class="mt-6">
         <flux:heading size="lg" class="mb-4">Installation</flux:heading>
-        <flux:text class="text-gray-600 dark:text-gray-300">
-            Create a new Laravel project:
-        </flux:text>
-        <div class="flex items-center mt-2">
-            <flux:text
-                class="inline-block text-gray-600 dark:text-gray-300 bg-zinc-100 dark:bg-zinc-600 p-2 rounded-md">
-                <pre>laravel new --using {{ $package['package']['name'] }}</pre>
+        <div>
+            <flux:text class="text-gray-600 dark:text-gray-300 font-bold">
+                Create with Laravel CLI:
             </flux:text>
-            {{-- Inline copy button --}}
-            <flux:tooltip content="Copy to clipboard">
-                <flux:button class="inline" @click="copyToClipboard" class="ml-2">
-                    <flux:icon name="copy" />
-                </flux:button>
-            </flux:tooltip>
+            <div class="flex items-center mt-2">
+                <flux:text
+                    class="inline-block text-gray-600 dark:text-gray-300 bg-zinc-100 dark:bg-zinc-600 p-2 rounded-md">
+                    <pre>laravel new --using {{ $package['package']['name'] }}</pre>
+                </flux:text>
+                {{-- Inline copy button --}}
+                <flux:tooltip content="Copy to clipboard">
+                    <flux:button type="button" class="inline" @click="copyToClipboard" class="ml-2">
+                        <flux:icon name="copy" />
+                    </flux:button>
+                </flux:tooltip>
+            </div>
+        </div>
+        <div class="relative my-4">
+            <div class="absolute inset-0 flex items-center">
+                <div class="w-full border-t border-gray-300 dark:border-gray-700"></div>
+            </div>
+            <div class="relative flex justify-center text-sm">
+                <span class="px-2 bg-white dark:bg-zinc-900 text-gray-500 dark:text-gray-400">OR</span>
+            </div>
+        </div>
+        <div class="mt-4">
+            <flux:link target="_blank" href="https://herd.laravel.com/new/{{ $package['package']['name'] }}"><flux:text class="text-gray-600 dark:text-gray-300 font-bold">Create with Herd</flux:text>
+            </flux:link>
         </div>
     </div>
+
 </div>
 <script>
     function copyToClipboard() {
         const command = 'laravel new --using {{ $package['package']['name'] }}';
         navigator.clipboard.writeText(command);
+        Flux.toast({
+            heading: 'Copied!',
+            text: 'Command copied to clipboard',
+            variant: 'success',
+            duration: 3000
+        })
     }
 </script>
