@@ -7,7 +7,8 @@ new class extends Component {
     public $package;
     public $packagistService;
 
-    public function mount(PackagistService $packagistService, $vendor, $package) {
+    public function mount(PackagistService $packagistService, $vendor, $package)
+    {
         $this->package = $packagistService->getPackage($vendor, $package);
     }
 };
@@ -21,7 +22,8 @@ new class extends Component {
 
     <div class="flex flex-wrap gap-4 justify-between items-center">
         <div class="flex items-center space-x-4">
-            <flux:link href="{{ $package['package']['repository'] }}" class="inline-flex items-center px-4 py-2 bg-zinc-100 dark:bg-zinc-700 rounded-md hover:bg-zinc-200 dark:hover:bg-zinc-600 transition-colors">
+            <flux:link href="{{ $package['package']['repository'] }}"
+                class="inline-flex items-center px-4 py-2 bg-zinc-100 dark:bg-zinc-700 rounded-md hover:bg-zinc-200 dark:hover:bg-zinc-600 transition-colors">
                 <flux:icon class="mr-2" name="github" />
                 View on GitHub
             </flux:link>
@@ -48,9 +50,23 @@ new class extends Component {
         <flux:text class="text-gray-600 dark:text-gray-300">
             Create a new Laravel project:
         </flux:text>
-        <flux:text class="text-gray-600 dark:text-gray-300 mt-2 bg-zinc-100 dark:bg-zinc-600 p-2 rounded-md">
-            <pre>laravel new --using {{ $package['package']['name'] }}</pre>
-        </flux:text>
-
+        <div class="flex items-center mt-2">
+            <flux:text
+                class="inline-block text-gray-600 dark:text-gray-300 bg-zinc-100 dark:bg-zinc-600 p-2 rounded-md">
+                <pre>laravel new --using {{ $package['package']['name'] }}</pre>
+            </flux:text>
+            {{-- Inline copy button --}}
+            <flux:tooltip content="Copy to clipboard">
+                <flux:button class="inline" @click="copyToClipboard" class="ml-2">
+                    <flux:icon name="copy" />
+                </flux:button>
+            </flux:tooltip>
+        </div>
     </div>
 </div>
+<script>
+    function copyToClipboard() {
+        const command = 'laravel new --using {{ $package['package']['name'] }}';
+        navigator.clipboard.writeText(command);
+    }
+</script>
