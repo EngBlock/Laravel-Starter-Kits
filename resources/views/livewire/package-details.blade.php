@@ -14,8 +14,8 @@ new class extends Component {
 };
 ?>
 
-<div class="bg-white dark:bg-zinc-900 rounded-lg shadow-md p-6 max-w-4xl mx-auto">
-    <flux:heading size="xl" class="text-center mb-4">{{ $package['package']['name'] }}</flux:heading>
+<div class="bg-white dark:bg-zinc-900 rounded-lg shadow-md p-6 mx-auto">
+    <flux:heading size="xl" class="text-left mb-4">{{ $package['package']['name'] }}</flux:heading>
     <div class="border-b dark:border-gray-700 mb-4 pb-4">
         <flux:text class="text-gray-600 dark:text-gray-300 text-lg">{{ $package['package']['description'] }}</flux:text>
     </div>
@@ -51,16 +51,13 @@ new class extends Component {
             <flux:text class="text-gray-600 dark:text-gray-300 font-bold">
                 Create with Laravel CLI:
             </flux:text>
-            <div class="flex items-center mt-2">
-                <flux:text
-                    class="inline-block text-gray-600 dark:text-gray-300 bg-zinc-100 dark:bg-zinc-600 p-2 rounded-md">
-                    <pre>laravel new --using {{ $package['package']['name'] }}</pre>
-                </flux:text>
-                {{-- Inline copy button --}}
-                <flux:tooltip content="Copy to clipboard">
-                    <flux:button type="button" class="inline" @click="copyToClipboard" class="ml-2">
-                        <flux:icon name="copy" />
-                    </flux:button>
+            <div class="flex items-center mt-2 max-w-full">
+                <flux:tooltip content="Copy to clipboard" class="flex-1">
+
+                    <flux:text @click="copyToClipboard"
+                        class="cursor-pointer inline-block text-gray-600 dark:text-gray-300 bg-zinc-100 dark:bg-zinc-600 p-2 rounded-md w-full">
+                        <pre class="max-w-full overflow-x-hidden overflow-ellipsis">laravel new --using {{ $package['package']['name'] }}</pre>
+                    </flux:text>
                 </flux:tooltip>
             </div>
         </div>
@@ -73,7 +70,8 @@ new class extends Component {
             </div>
         </div>
         <div class="mt-4">
-            <flux:link target="_blank" href="https://herd.laravel.com/new/{{ $package['package']['name'] }}"><flux:text class="text-gray-600 dark:text-gray-300 font-bold">Create with Herd</flux:text>
+            <flux:link target="_blank" href="https://herd.laravel.com/new/{{ $package['package']['name'] }}">
+                <flux:text class="text-gray-600 dark:text-gray-300 font-bold">Create with Herd</flux:text>
             </flux:link>
         </div>
     </div>
