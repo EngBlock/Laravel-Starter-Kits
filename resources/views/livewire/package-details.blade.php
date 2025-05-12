@@ -42,4 +42,15 @@ new class extends Component {
             </div>
         </div>
     </div>
+
+    <div class="mt-6">
+        <flux:heading size="lg" class="mb-4">Installation</flux:heading>
+        <flux:text class="text-gray-600 dark:text-gray-300">
+            Create a new Laravel project:
+        </flux:text>
+        <flux:text class="text-gray-600 dark:text-gray-300 mt-2 bg-zinc-100 dark:bg-zinc-600 p-2 rounded-md">
+            <pre>laravel new --using {{ $package['package']['name'] }}</pre>
+        </flux:text>
+
+    </div>
 </div>
