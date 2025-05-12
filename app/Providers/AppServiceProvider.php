@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Services\PackagistService;
 use Illuminate\Support\ServiceProvider;
 use PostHog\PostHog;
 
@@ -12,7 +13,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(PackagistService::class, function ($app) {
+            return new PackagistService();
+        });
     }
 
     /**

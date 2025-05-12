@@ -22,7 +22,7 @@ new class extends Component {
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4">
     @foreach ($mostDownloadedStarterKits as $starterKit)
-    <a href="{{ $starterKit['repository'] }}" aria-label="Visit {{ $starterKit['name'] }} repository">
+    <a href="{{ route('starter-kit', ['vendor' => explode('/', $starterKit['name'])[0], 'package' => explode('/', $starterKit['name'])[1]]) }}" aria-label="Visit {{ $starterKit['name'] }} repository">
         <flux:card size="sm" class="hover:bg-zinc-50 dark:hover:bg-zinc-700">
             <flux:heading class="flex items-center gap-2">{{ $starterKit['name'] }} <flux:icon name="arrow-up-right" class="ml-auto text-zinc-400" variant="micro" /></flux:heading>
             <flux:text class="mt-2">{{ $starterKit['downloads'] }} downloads</flux:text>
