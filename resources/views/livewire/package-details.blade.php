@@ -1,20 +1,24 @@
 <?php
 
 use App\Services\PackagistService;
+use App\Services\GitHubService;
 use Livewire\Volt\Component;
 use function Livewire\Volt\{mount};
 new class extends Component {
     public $package;
+    public $readme;
     public $packagistService;
+    public $githubService;
 
-    public function mount(PackagistService $packagistService, $vendor, $package)
+    public function mount(PackagistService $packagistService, GitHubService $githubService, $vendor, $package)
     {
         $this->package = $packagistService->getPackage($vendor, $package);
+        $this->readme = $githubService->getReadmeContent($this->package['package']['repository']);
     }
 };
 ?>
 
-<div class="bg-white dark:bg-zinc-900 rounded-lg shadow-md p-6 mx-auto">
+<div class="bg-white dark:bg-zinc-900 rounded-lg p-6 mx-auto">
     <flux:heading size="xl" class="text-left mb-4">{{ $package['package']['name'] }}</flux:heading>
     <div class="border-b dark:border-gray-700 mb-4 pb-4">
         <flux:text class="text-gray-600 dark:text-gray-300 text-lg">{{ $package['package']['description'] }}</flux:text>
@@ -51,12 +55,24 @@ new class extends Component {
             <flux:text class="text-gray-600 dark:text-gray-300 font-bold">
                 Create with Laravel CLI:
             </flux:text>
-            <div class="flex items-center mt-2 max-w-full">
+            <div class="flex items-center mt-2 max-w-full overflow-x-auto overflow-ellipsis">
                 <flux:tooltip content="Copy to clipboard" class="flex-1">
-
-                    <flux:text @click="copyToClipboard"
-                        class="cursor-pointer inline-block text-gray-600 dark:text-gray-300 bg-zinc-100 dark:bg-zinc-600 p-2 rounded-md w-full">
-                        <pre class="max-w-full overflow-x-hidden overflow-ellipsis">laravel new --using {{ $package['package']['name'] }}</pre>
+                    <flux:text @click="copyLaravelToClipboard"
+                        class="inline-block text-gray-600 dark:text-gray-300 bg-zinc-100 dark:bg-zinc-600 p-2 rounded-md w-full">
+                        <pre>laravel new --using {{ $package['package']['name'] }}</pre>
+                    </flux:text>
+                </flux:tooltip>
+            </div>
+        </div>
+        <div class="mt-4">
+            <flux:text class="text-gray-600 dark:text-gray-300 font-bold">
+                Create with Composer (with a name):
+            </flux:text>
+            <div class="flex items-center mt-2 max-w-full overflow-x-auto overflow-ellipsis">
+                <flux:tooltip content="Copy to clipboard" class="flex-1">
+                    <flux:text @click="copyComposerToClipboard"
+                        class="cursor-pointer overflow-ellipsis inline-block text-gray-600 dark:text-gray-300 bg-zinc-100 dark:bg-zinc-600 p-2 rounded-md w-full">
+                        <pre>composer create-project {{ $package['package']['name'] }} {name}</pre>
                     </flux:text>
                 </flux:tooltip>
             </div>
@@ -71,15 +87,40 @@ new class extends Component {
         </div>
         <div class="mt-4">
             <flux:link target="_blank" href="https://herd.laravel.com/new/{{ $package['package']['name'] }}">
-                <flux:text class="text-gray-600 dark:text-gray-300 font-bold">Create with Herd</flux:text>
+                <img class="w-64" src="{{ asset('images/Herd create image.png') }}" alt="Create a new site with Herd">
             </flux:link>
         </div>
     </div>
-
+    @if($readme)
+    <div class="mt-8">
+        <flux:heading size="lg" class="mb-4">Documentation</flux:heading>
+        <div class="rounded-xl bg-zinc-50 dark:bg-zinc-800/60 shadow-lg p-8 border border-zinc-200 dark:border-zinc-700">
+            <div class="prose dark:prose-invert mx-auto
+                prose-img:rounded-lg prose-img:shadow-lg
+                prose-a:text-primary-600 prose-a:inline-block dark:prose-a:text-primary-400 prose-a:underline hover:prose-a:text-primary-800
+                prose-h2:mt-10 prose-h2:border-b prose-h2:pb-2 prose-h2:border-gray-200 dark:prose-h2:border-gray-700
+                prose-li:marker:text-primary-500
+            ">
+                {!! Str::markdown($readme) !!}
+            </div>
+        </div>
+    </div>
+    @endif
 </div>
 <script>
-    function copyToClipboard() {
+    function copyLaravelToClipboard() {
         const command = 'laravel new --using {{ $package['package']['name'] }}';
+        navigator.clipboard.writeText(command);
+        Flux.toast({
+            heading: 'Copied!',
+            text: 'Command copied to clipboard',
+            variant: 'success',
+            duration: 3000
+        })
+    }
+
+    function copyComposerToClipboard() {
+        const command = 'composer create-project {{ $package['package']['name'] }}';
         navigator.clipboard.writeText(command);
         Flux.toast({
             heading: 'Copied!',

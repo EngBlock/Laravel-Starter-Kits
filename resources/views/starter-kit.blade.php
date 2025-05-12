@@ -1,5 +1,5 @@
 <x-layouts.app.header :title="$title ?? null">
-    <flux:main container>
+    <flux:main>
         <livewire:package-details :vendor="$vendor" :package="$package" />
     </flux:main>
 </x-layouts.app.header>
