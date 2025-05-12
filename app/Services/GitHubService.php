@@ -5,7 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Support\Facades\Cache;
 class GitHubService
 {
     private const GITHUB_API_BASE = 'https://api.github.com';
@@ -58,33 +58,38 @@ class GitHubService
      */
     public function getReadmeContent(string $githubUrl): ?string
     {
-        try {
-            $defaultBranch = $this->getDefaultBranch($githubUrl) ?? 'main';
+        // Create a cache key based on the GitHub URL
+        $cacheKey = 'github_readme_' . md5($githubUrl);
 
-            // Remove trailing slash if present
-            $githubUrl = rtrim($githubUrl, '/');
+        // Try to get from cache first (cache for 1 hours)
+        return Cache::remember($cacheKey, 60 * 60 * 1, function () use ($githubUrl) {
+            try {
+                $defaultBranch = $this->getDefaultBranch($githubUrl) ?? 'main';
 
-            // Extract owner and repo from the URL
-            $parts = explode('/', $githubUrl);
-            $owner = $parts[count($parts) - 2];
-            $repo = $parts[count($parts) - 1];
+                // Remove trailing slash if present
+                $githubUrl = rtrim($githubUrl, '/');
 
-            $response = Http::get(
-                self::GITHUB_API_BASE . "/repos/{$owner}/{$repo}/readme",
-                [
-                    'ref' => $defaultBranch
-                ]
-            );
+                // Extract owner and repo from the URL
+                $parts = explode('/', $githubUrl);
+                $owner = $parts[count($parts) - 2];
+                $repo = $parts[count($parts) - 1];
 
-            if ($response->successful()) {
-                return base64_decode($response->json('content'));
+                $response = Http::get(
+                    self::GITHUB_API_BASE . "/repos/{$owner}/{$repo}/readme",
+                    [
+                        'ref' => $defaultBranch
+                    ]
+                );
+
+                if ($response->successful()) {
+                    return base64_decode($response->json('content'));
+                }
+
+                return null;
+            } catch (\Exception $e) {
+                Log::error('Error fetching README content: ' . $e->getMessage());
+                return null;
             }
-
-            return null;
-        } catch (\Exception $e) {
-            dd($e);
-            Log::error('Error fetching README content: ' . $e->getMessage());
-            return null;
-        }
+        });
     }
 }

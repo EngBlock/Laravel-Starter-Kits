@@ -8,8 +8,12 @@ class PackagistService
 {
     public function getPackage($vendor, $package)
     {
-        $response = Http::get("https://packagist.org/packages/{$vendor}/{$package}.json");
-        return $response->json();
+        $cacheKey = "packagist_{$vendor}_{$package}";
+
+        return cache()->remember($cacheKey, 60 * 5, function () use ($vendor, $package) {
+            $response = Http::get("https://packagist.org/packages/{$vendor}/{$package}.json");
+            return $response->json();
+        });
 
         /**
          * returns something like[

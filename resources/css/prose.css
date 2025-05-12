@@ -51,12 +51,7 @@
   }
 
   .prose img {
-    display: block;
-    margin: 2rem auto;
-    border-radius: 1rem;
-    box-shadow: 0 4px 32px 0 rgba(0,0,0,0.10);
-    max-width: 100%;
-    height: auto;
+    display: inline-block;
   }
 
   .prose h1, .prose h2, .prose h3, .prose h4 {
